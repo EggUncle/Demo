@@ -11,7 +11,13 @@ import java.lang.reflect.Method;
 
 public class MyUtils {
 
-    public static void myViewInject(Context context) {
+
+    public static void inject(Context context){
+        myLayoutInject(context);
+        myViewInject(context);
+    }
+
+    private static void myViewInject(Context context) {
         try {
             Class<? extends Context> uiClass = context.getClass();
 
@@ -34,7 +40,7 @@ public class MyUtils {
         }
     }
 
-    public static void myLayoutInject(Context context) {
+    private static void myLayoutInject(Context context) {
         try {
             Class<? extends Context> uiClass = context.getClass();
 
@@ -47,7 +53,6 @@ public class MyUtils {
         } catch (Exception e) {
 
         }
-
 
     }
 }
