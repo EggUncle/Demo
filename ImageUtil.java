@@ -2,10 +2,7 @@ package image;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -20,31 +17,6 @@ public class ImageUtil {
     String saveName;//保存图片的名字
     String suffix; //图片的类型
 
-//    StringBuilder inputHtmlStr;
-//    //<font color="#{{ item.color }}">{{ item.char }}</font>
-//    String htmlStr="<html>\n" +
-//            "<head>\n" +
-//            "    <meta charset=\"utf-8\">\n" +
-//            "    <title>{{ title }}</title>\n" +
-//            "    <style type=\"text/css\">\n" +
-//            "        body {\n" +
-//            "            margin: 0px; padding: 0px; line-height:100%; letter-spacing:0px; text-align: center;\n" +
-//            "            min-width: {{width}}px;\n" +
-//            "            width: auto !important;\n" +
-//            "            font-size: {{size}}px;\n" +
-//            "            background-color: #{{background}};\n" +
-//            "            font-family: {{font_family}};\n" +
-//            "        }\n" +
-//            "    </style>\n" +
-//            "</head>\n" +
-//            "<body>\n" +
-//            "<div>"
-//            +inputHtmlStr+
-//            "</div>\n" +
-//            "</body>\n" +
-//            "</html>";
-
-    public String c = "稳";
 
     public ImageUtil(String openUrl, String saveUrl, String saveName, String suffix) {
         this.openUrl = openUrl;
@@ -67,6 +39,7 @@ public class ImageUtil {
             throw new Exception("ImageDeal>>>" + file + " 不是一个图片文件!");
         }
         BufferedImage bi = ImageIO.read(file); // 读取该图片
+        bi=zoomImg(bi);
         BufferedImage spinImage = new BufferedImage(bi.getWidth(),
                 bi.getHeight(), bi.TYPE_INT_RGB);
         if (bi.getWidth() < size || bi.getHeight() < size || size <= 0) { // 马赛克格尺寸太大或太小
@@ -132,14 +105,28 @@ public class ImageUtil {
     }
 
 
-    //将图片转化为html并且存在硬盘中
-    public boolean imgToHtml(int size) throws Exception {
+    /**
+     * 将图片转化为html并且存在硬盘中
+     * @param size 分隔的大小
+     * @param font 填充的内容
+     * @return
+     * @throws Exception
+     */
+
+    public boolean imgToHtml(int size,String font) throws Exception {
         File file = new File(openUrl);
         if (!file.isFile()) {
             throw new Exception("ImageDeal>>>" + file + " 不是一个图片文件!");
         }
 
+        //将输入内容转化为字符串数组
+        char[] charArray=font.toCharArray();
+        int strLength=font.length();
+        //取余来不断循环当前数组
+        int c=0;
+
         BufferedImage bi = ImageIO.read(file); // 读取该图片
+        bi=zoomImg(bi);
         if (bi.getWidth() < size || bi.getHeight() < size || size <= 0) { // 马赛克格尺寸太大或太小
             return false;
         }
@@ -161,10 +148,10 @@ public class ImageUtil {
 
         StringBuilder inputHtmlStr = new StringBuilder();
 
-        // 绘制马赛克(绘制矩形并填充颜色)
+        // 绘制字符并填充颜色
         for (int i = 0; i < ycount; i++) {
             for (int j = 0; j < xcount; j++) {
-                // 矩形颜色取中心像素点RGB值
+                // 矩形颜色取像素点RGB值
                 int centerX = x;
                 int centerY = y;
                 System.out.println(centerX + "  " + centerY);
@@ -172,7 +159,7 @@ public class ImageUtil {
                 Color color = new Color(RGB);
 
                 String RGBColor = toHex(color.getRed(), color.getGreen(), color.getBlue());
-                inputHtmlStr.append("<font color=" + RGBColor + ">" + c + "</font>");
+                inputHtmlStr.append("<font color=" + RGBColor + ">" + charArray[c++%strLength] + "</font>");
                 x = x + size;// 计算下一个矩形的x坐标
             }
             inputHtmlStr.append("<br>\n\n");
@@ -186,6 +173,24 @@ public class ImageUtil {
 
     }
 
+
+    /**
+     * 缩放图片，等比
+     *
+     * @return
+     */
+    public static BufferedImage zoomImg(BufferedImage img) {
+        int height = img.getHeight(null);
+        int width = img.getWidth(null);
+
+        int width2=400;
+        int height2=height*width2/width;
+
+        BufferedImage bi = new BufferedImage(width2,height2,BufferedImage.TYPE_INT_RGB);
+        bi.getGraphics().drawImage(img,0,0,width2,height2,null);
+
+        return bi;
+    }
 
 
     public static String getHtml(StringBuilder strInput, int width, int height, int size) {
