@@ -11,14 +11,14 @@ import java.io.PrintStream;
  * Created by egguncle on 17-4-3.
  * 图片处理类
  */
-public class ImageUtil {
+public class Image2Html {
     String openUrl;//需要处理的图片打开路径
     String saveUrl;//图片的保存路径
     String saveName;//保存图片的名字
     String suffix; //图片的类型
 
 
-    public ImageUtil(String openUrl, String saveUrl, String saveName, String suffix) {
+    public Image2Html(String openUrl, String saveUrl, String saveName, String suffix) {
         this.openUrl = openUrl;
         this.saveUrl = saveUrl;
         this.saveName = saveName;
