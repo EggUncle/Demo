@@ -207,9 +207,10 @@ public class Image2Html {
                 "            font-family: monospace;\n" +
                 "        }\n" +
                 "div{" +
-                "width:" + width + "px;\n" +
-                "height:" + height + "px;\n" +
-                "margin-left:auto;margin-right:auto;" +
+                "white-space:nowrap;\n"+
+            //    "width:" + width + "px;\n" +
+           //     "height:" + height + "px;\n" +
+            //    "margin-left:auto;margin-right:auto;" +
                 "}" +
                 "    </style>\n" +
                 "</head>\n" +
